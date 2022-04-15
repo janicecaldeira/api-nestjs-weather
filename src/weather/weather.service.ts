@@ -6,7 +6,6 @@ import { AxiosResponse } from 'axios'
 import { WeatherRequest } from './weather.request'
 import { WeatherResponse } from './weather.response'
 import { LocationResponse } from './location.response'
-import { LocationDto } from './location.dto'
 
 @Injectable()
 export class WeatherService {

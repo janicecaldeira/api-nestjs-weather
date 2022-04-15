@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { ApiOkResponse } from '@nestjs/swagger'
-import { LocationDto } from './location.dto'
 import { WeatherRequest } from './weather.request'
 import { WeatherResponse } from './weather.response'
 import { WeatherService } from './weather.service'
