@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Body, Controller, Get, Query } from '@nestjs/common'
 import { ApiOkResponse } from '@nestjs/swagger'
+import { LocationDto } from './location.dto'
 import { WeatherRequest } from './weather.request'
 import { WeatherResponse } from './weather.response'
 import { WeatherService } from './weather.service'
@@ -18,7 +19,12 @@ export class WeatherController {
   }
 
   @Get('/location')
-  getLocation() {
-    return this.weatherService.getLocation()
+  getLocation(@Query() params: WeatherRequest) {
+    return this.weatherService.getLocation(params)
+  }
+
+  @Get('/adress')
+  getAdress(@Query() params: WeatherRequest) {
+    return this.weatherService.getAdress(params)
   }
 }

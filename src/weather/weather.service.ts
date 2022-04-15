@@ -5,7 +5,8 @@ import { catchError, map } from 'rxjs/operators'
 import { AxiosResponse } from 'axios'
 import { WeatherRequest } from './weather.request'
 import { WeatherResponse } from './weather.response'
-import { LocationResponse } from './loaction.response'
+import { LocationResponse } from './location.response'
+import { LocationDto } from './location.dto'
 
 @Injectable()
 export class WeatherService {
@@ -14,7 +15,7 @@ export class WeatherService {
     private readonly logger: Logger
   ) {}
 
-  getWeatherFromApi(params: WeatherRequest): Observable<WeatherResponse> {
+  getWeatherFromApi(params: WeatherRequest): Observable<any> {
     return this.httpService
       .get('https://api.openweathermap.org/data/2.5/weather/', { params })
       .pipe(
@@ -35,17 +36,15 @@ export class WeatherService {
       )
   }
 
-  getLocation(): Observable<LocationResponse> {
-    const lat = '-14.6589835'
-    const lon = '-49.3091405'
-
-    console.log(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}`
-    )
+  async getLocation(
+    params: WeatherRequest
+  ): Promise<Observable<LocationResponse>> {
+    const response = await firstValueFrom(this.getWeatherFromApi(params))
+    const coord = response.coord
 
     return this.httpService
       .get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=jsonv2`
+        `https://nominatim.openstreetmap.org/reverse?lat=${coord.lat}&lon=${coord.lon}&format=jsonv2&zoom=18`
       )
       .pipe(
         map((response: AxiosResponse<any>) => {
@@ -63,5 +62,11 @@ export class WeatherService {
           throw new BadRequestException(errorMessage)
         })
       )
+  }
+
+  async getAdress(params: WeatherRequest) {
+    const response = await firstValueFrom(await this.getLocation(params))
+
+    return response.address
   }
 }
