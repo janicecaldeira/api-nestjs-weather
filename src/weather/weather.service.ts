@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException
+} from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom, Observable } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
@@ -67,5 +72,20 @@ export class WeatherService {
     const response = await firstValueFrom(await this.getLocation(params))
 
     return response.address
+  }
+
+  async getTimezone(params: WeatherRequest) {
+    const { find } = require('geo-tz')
+
+    const response = await firstValueFrom(this.getWeatherFromApi(params))
+    const coord = response.coord
+
+    const timezone = find(coord.lat, coord.lon)
+
+    if (!timezone) {
+      throw new NotFoundException('Timezone')
+    }
+
+    return timezone[0]
   }
 }

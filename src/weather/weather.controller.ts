@@ -26,4 +26,9 @@ export class WeatherController {
   getAdress(@Query() params: WeatherRequest) {
     return this.weatherService.getAdress(params)
   }
+
+  @Get('/timezone')
+  getTimezone(@Query() params: WeatherRequest) {
+    return this.weatherService.getTimezone(params)
+  }
 }
